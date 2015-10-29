@@ -15,6 +15,39 @@ function getNoteRecord(page, noteId) {
     return db.child(noteId);
 }
 
+function getActions(page) {
+    var db = getOrCreateUrlDb(page);
+    var actions = db.child(RECORD_NAMES.ACTION());
+
+    if (isNull(actions)) {
+        actions = db.createNew(RECORD_NAMES.ACTION(), '{"actions":[]}', RECORD_TYPES.ACTION);
+    }
+
+    return actions;
+}
+
+function getActionsArray(page) {
+    var db = getOrCreateUrlDb(page);
+    var actions = db.child(RECORD_NAMES.ACTION());
+
+    if (isNull(actions)) {
+        actions = db.createNew(RECORD_NAMES.ACTION(), '{"actions":[]}', RECORD_TYPES.ACTION);
+    }
+
+    return actions.jsonObject.actions;
+}
+
+function addAction(page, action) {
+    var actions = getActions(page);
+
+    var rawJson = actions.json;
+    var json = JSON.parse(rawJson);
+
+    json.actions.push(action);
+
+    actions.update(JSON.stringify(json));
+}
+
 var setAllowAccess = function (jsonDB, allowAccess) {
     transactionManager.runInTransaction(function () {
         jsonDB.setAllowAccess(allowAccess);

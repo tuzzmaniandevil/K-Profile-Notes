@@ -24,10 +24,28 @@ function userNotesTab(page, params, context) {
                     ]
                 }
             }
+        },
+        "sort": {
+            "modifiedDate": {
+                "order": "desc"
+            }
         }
     };
 
     var result = db.search(JSON.stringify(queryJson));
+
+    var actions = getActions(page);
+
+    var rawJson = actions.json;
+    var json = JSON.parse(rawJson);
+
+    var list = formatter.newArrayList();
+
+    for (var i = 0; i < json.actions.length; i++) {
+        list.add(json.actions[i]);
+    }
+
+    context.put('noteActionsList', list);
 
     context.put('userNotesSearchResults', result);
 }
@@ -46,6 +64,13 @@ function addUserNote(page, params) {
     var title = safeString(params.title);
     var details = safeString(params.details);
     var action = safeString(params.action);
+
+    var actions = getActionsArray(page);
+
+    if (!actions.contains(action)) {
+        addAction(page, action);
+    }
+
 
     log.info('Add note for user {}', securityManager.currentUser.name);
 
@@ -76,8 +101,8 @@ function deleteUserNote(page) {
     var noteId = safeString(page.attributes.noteId)
 
     var record = getNoteRecord(page, noteId);
-    
-    if(isNotNull(record)){
+
+    if (isNotNull(record)) {
         record.delete();
     }
 }
