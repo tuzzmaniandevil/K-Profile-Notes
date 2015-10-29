@@ -1,0 +1,95 @@
+<div class="row">
+    <div class="col-md-12">
+        <button type="button" data-toggle="modal" data-target="#modal-add-notes" class="btn btn-info pull-right"><i class="fa fa-plus"></i> Add Note</button>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <colgroup>
+            <col width="10%"/>
+            <col width="15%"/>
+            <col />
+            <col width="120px"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Updated</th>
+                <th>Created By</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            #foreach($i in [0..10])
+            <tr>
+                <td>05/10/2015 14:26</td>
+                <td>Tracey Thompson</td>
+                <td>
+                    <div class="col-md-12" style="padding-left: 0px !important;">
+                        <span class="text-info"><strong>Title so to speak</strong></span>
+                    </div>
+                    <div class="col-md-12" style="padding-left: 0px !important;">
+                        <span>Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-success btn-add-to-group"><i class="fa fa-pencil"></i> Edit</button>
+                        <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <li><a href="#" class="btn-remove-users">Remove</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
+
+<!-- create modal -->
+<div id="modal-add-notes" class="modal modal-md fade" aria-hidden="true" tabindex="-1">
+    <form action="/_addUserNote" method="POST" class="form-horizontal exclude">
+        <input type="hidden" name="createNew" value="$page.userResource.href"/>
+        <div class="modal-header">
+            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+            <h4 class="modal-title">Create a new note</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="title">Title</label>
+                <div class="col-md-8">
+                    <input class="form-control required" type="text" id="title" name="title" placeholder="Title" minlength="1" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="details">Details</label>
+                <div class="col-md-10">
+                    <textarea class="form-control" placeholder="Details" name="details" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-sm btn-default" data-dismiss="modal" type="button">Close</button>
+            <button type="button" class="btn btn-sm btn-primary" data-type="form-submit">Create</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    pageInitFunctions.push(function () {
+        initManageUserNotesTab();
+    });
+    function initManageUserNotesTab() {
+        var addModal = $('#modal-add-notes');
+        var addForm = addModal.find('form');
+
+        addForm.forms({
+            callback: function (resp) {
+
+            }
+        });
+    }
+</script>

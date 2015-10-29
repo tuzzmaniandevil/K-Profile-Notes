@@ -1,0 +1,6 @@
+<controllers>
+    <source>/APP-INF/formatterUtils.js</source>
+    <source>/APP-INF/app.js</source>
+    <source>/APP-INF/common.js</source>
+    <source>/APP-INF/config.js</source>
+</controllers>
