@@ -10,6 +10,11 @@ function getOrCreateUrlDb(page) {
     return db;
 }
 
+function getNoteRecord(page, noteId) {
+    var db = getOrCreateUrlDb(page);
+    return db.child(noteId);
+}
+
 var setAllowAccess = function (jsonDB, allowAccess) {
     transactionManager.runInTransaction(function () {
         jsonDB.setAllowAccess(allowAccess);

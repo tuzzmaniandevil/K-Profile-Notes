@@ -19,17 +19,21 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-            #foreach($i in [0..10])
+        <tbody id="notesTableBody">
+            #if($userNotesSearchResults.hits.total == 0)
+
+            #else
+            #foreach($hit in $userNotesSearchResults.hits.hits)
             <tr>
-                <td>05/10/2015 14:26</td>
-                <td>Tracey Thompson</td>
+                <td>$formatter.formatDateTime($formatter.parseDate($hit.source.modifiedDate))</td>
+                #set($userUrl = '/manageUsers/' + $hit.source.modifiedBy)
+                <td>$page.find($userUrl).thisProfile.formattedName</td>
                 <td>
                     <div class="col-md-12" style="padding-left: 0px !important;">
-                        <span class="text-info"><strong>Title so to speak</strong></span>
+                        <span class="text-info"><strong>$hit.source.title</strong></span>
                     </div>
                     <div class="col-md-12" style="padding-left: 0px !important;">
-                        <span>Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. Called Jo Smith in regards to this and that. </span>
+                        <pre style="font-size: inherit;color: inherit;border: initial;padding: initial;font-family: inherit; background-color:inherit !important;">$formatter.format($hit.source.details)</pre>
                     </div>
                 </td>
                 <td>
@@ -39,11 +43,12 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a href="#" class="btn-remove-users">Remove</a></li>
+                            <li><a href="$hit.id" data-title="$hit.source.title" class="btn-remove-note"><i class="fa fa-trash"></i> Delete</a></li>
                         </ul>
                     </div>
                 </td>
             </tr>
+            #end
             #end
         </tbody>
     </table>
@@ -88,8 +93,27 @@
 
         addForm.forms({
             callback: function (resp) {
-
+                addModal.modal('hide');
+                Msg.success('Successfully added note.');
+                $('#notesTableBody').reloadFragment();
             }
+        });
+
+        $('body').on('hidden.bs.modal', '#modal-add-notes', function () {
+            addForm.trigger('reset');
+        });
+
+        $('body').on('click', '.btn-remove-note', function (e) {
+            e.preventDefault();
+
+            var btn = $(this);
+            var tr = btn.closest('tr');
+            var href = '/_addUserNote/' + btn.attr('href');
+            var title = '"' + btn.data('title') + '"';
+
+            confirmDelete(href, title, function () {
+                tr.remove();
+            });
         });
     }
 </script>

@@ -3,4 +3,10 @@
     <source>/APP-INF/app.js</source>
     <source>/APP-INF/common.js</source>
     <source>/APP-INF/config.js</source>
+    
+    <source>/APP-INF/manageUserNotesTab.js</source>
+    <source>/APP-INF/manageUserNotesPanel.js</source>
+    <source>/APP-INF/manageUserNotes.js</source>
+    
+    <menu parentId="menuContent" id="menuManageNoteTemplates" text="User Notes" path="/userNotes/" ordering="20"/>
 </controllers>

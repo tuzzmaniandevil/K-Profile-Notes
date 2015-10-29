@@ -111,6 +111,13 @@ function removeKeys(params) {
     }
 }
 
+function removeArrayEntry(params) {
+    for (var i = 1; i < arguments.length; i++) {
+        var key = arguments[i];
+        params.remove(key);
+    }
+}
+
 function populateExtraFields(params, bean) {
     var paramsArray = params.entrySet().toArray();
     for (var i = 0; i < paramsArray.length; i++) {

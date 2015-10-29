@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <title>User Notes</title>
+        <link rel="stylesheet" href="/theme/assets/plugins/jQuery-Tags-Input/jquery.tagsinput.css">
+        <script src="/theme/assets/plugins/jQuery-Tags-Input/jquery.tagsinput.js">//</script>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-history"></i>
+                        Latest Notes
+                    </div>
+                    <div class="panel-body">
+                        <ul class="activities">
+                            #set($recentChanges = $page.attributes.recentChanges)
+                            #if($recentChanges.hits.total == 0)
+
+                            #else
+                            #foreach($hit in $recentChanges.hits.hits)
+                            #set($isModified = false)
+                            #if($hit.source.createdDate != $hit.source.modifiedDate)
+                            #set($isModified = true)
+                            #end
+                            <li>
+                                #set($modifiedByUrl = '/manageUsers/' + $hit.source.modifiedBy)
+                                #set($userUrl = '/manageUsers/' + $hit.source.userId)
+                                <a class="activity" href="$userUrl/#userNotesTab-tab">
+                                    #if($isModified)
+                                    <i class="fa fa-pencil circle-icon circle-teal"></i>
+                                    #else
+                                    <i class="fa fa-plus circle-icon circle-green"></i>
+                                    #end
+                                    <span class="desc">
+                                        #if($isModified)
+                                        <span class="text-info"><strong>Modified by $page.find($modifiedByUrl).thisProfile.formattedName: </strong></span>
+                                        $page.find($userUrl).thisProfile.formattedName - $hit.source.title
+                                        #else
+                                        <span class="text-success"><strong>Added by $page.find($modifiedByUrl).thisProfile.formattedName: </strong></span>
+                                            $page.find($userUrl).thisProfile.formattedName - $hit.source.title
+                                        #end
+                                    </span>
+                                    <div class="time">
+                                        <i class="fa fa-time bigger-110"></i>
+                                        <abbr class="timeago" title="$hit.source.modifiedDate">$hit.source.modifiedDate</abbr>
+                                    </div>
+                                </a>
+                            </li>
+                            #end
+                            #end
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-code"></i>
+                        Templates
+                    </div>
+                    <div class="panel-body">
+
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-tags"></i>
+                        Actions
+                    </div>
+                    <div class="panel-body">
+                        <input id="actions" class="form-control" value="$formatter.toCsv($page.attributes.actions)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function () {
+                $('.timeago').timeago()
+                $('#actions').tagsInput({
+                    width: '100%',
+                    defaultText: 'Add',
+                    removeWithBackspace: false,
+                    onAddTag: function (tag) {
+                        updateActionTag(tag, true);
+                    },
+                    onRemoveTag: function (tag) {
+                        updateActionTag(tag, false);
+                    }
+                });
+            });
+
+            function updateActionTag(tag, add) {
+                var data = {};
+                if (add) {
+                    data['addNewAction'] = tag;
+                } else {
+                    data['removeAction'] = tag;
+                }
+                $.ajax({
+                    type: "POST",
+                    data: data,
+                    url: window.location.pathname,
+                    dataType: "json",
+                    success: function (result) {
+                        flog(result);
+                    },
+                });
+            }
+        </script>
+    </body>
+</html>
