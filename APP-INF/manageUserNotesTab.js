@@ -26,7 +26,7 @@ function userNotesTab(page, params, context) {
             }
         },
         "sort": {
-            "modifiedDate": {
+            "createdDate": {
                 "order": "desc"
             }
         }
@@ -95,6 +95,9 @@ function updateUserNote(page, params) {
     log.info('updateUserNote page = {} params = {}', page, params);
 
     var noteId = safeString(page.attributes.noteId)
+    var currentUser = securityManager.currentUser;
+    var now = formatter.now;
+    var nowISO = formatter.formatDateISO8601(now);
 
     var record = getNoteRecord(page, noteId);
 
@@ -110,9 +113,12 @@ function updateUserNote(page, params) {
 
     json.title = title;
     json.details = details;
-    
+    json.modifiedBy = currentUser.thisProfile.id;
+    json.modifiedDate = nowISO;
+
+
     log.info('result {}', JSON.stringify(json));
-    
+
     record.update(JSON.stringify(json));
 
     return page.jsonResult(true);

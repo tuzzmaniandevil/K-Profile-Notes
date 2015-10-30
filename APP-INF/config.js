@@ -5,7 +5,8 @@ var
 
 var RECORD_TYPES = {
     NOTE: 'NOTE',
-    ACTION: 'ACTION'
+    ACTION: 'ACTION',
+    TEMPLATE: 'TEMPLATE'
 };
 
 var RECORD_NAMES = {
@@ -14,5 +15,8 @@ var RECORD_NAMES = {
     },
     ACTION: function () {
         return 'action';
+    },
+    TEMPLATE: function (name) {
+        return 'template_' + name;
     }
 };

@@ -38,7 +38,7 @@
                                         $page.find($userUrl).thisProfile.formattedName - $hit.source.title
                                         #else
                                         <span class="text-success"><strong>Added by $page.find($modifiedByUrl).thisProfile.formattedName: </strong></span>
-                                            $page.find($userUrl).thisProfile.formattedName - $hit.source.title
+                                        $page.find($userUrl).thisProfile.formattedName - $hit.source.title
                                         #end
                                     </span>
                                     <div class="time">
@@ -60,7 +60,39 @@
                         Templates
                     </div>
                     <div class="panel-body">
-
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-info pull-right"  data-toggle="modal" data-target="#modal-add-template">Add Template</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="padding-bottom: 0px !important;">
+                            <table class="table">
+                                <colgroup>
+                                    <col />
+                                    <col />
+                                    <col />
+                                    <col width="40px"/>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Title</th>
+                                        <th>Action</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    #foreach($i in [0..5])
+                                    <tr>
+                                        <td>Calls</td>
+                                        <td>Phoned Client</td>
+                                        <td>Called Client</td>
+                                        <td><button class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button></td>
+                                    </tr>
+                                    #end
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="panel panel-default">
@@ -74,9 +106,56 @@
                 </div>
             </div>
         </div>
+
+        <!-- create modal -->
+        <div id="modal-add-template" class="modal modal-md fade" aria-hidden="true" tabindex="-1">
+            <form action="/_addNoteTemplate" method="POST" class="form-horizontal">
+                <input type="hidden" name="createNew" value="$page.userResource.href"/>
+                <div class="modal-header">
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                    <h4 class="modal-title">Create a new template</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="name">Template Name</label>
+                        <div class="col-md-8">
+                            <input class="form-control required" type="text" id="name" name="name" placeholder="Template name" minlength="1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="title">Title</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="title" name="title" placeholder="Title" minlength="1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="action">Action</label>
+                        <div class="col-md-8">
+                            <select name="action" class="actionSelect2" style="width: 100%">
+                                #foreach($action in $page.attributes.noteActionList)
+                                <option value="$action">$action</option>
+                                #end
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="details">Details</label>
+                        <div class="col-md-10">
+                            <textarea class="form-control" placeholder="Details" name="details" rows="5"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-default" data-dismiss="modal" type="button">Close</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-type="form-submit">Create</button>
+                </div>
+            </form>
+        </div>
+
         <script>
             $(function () {
-                $('.timeago').timeago()
+                $('.timeago').timeago();
+
                 $('#actions').tagsInput({
                     width: '100%',
                     defaultText: 'Add',
@@ -87,6 +166,10 @@
                     onRemoveTag: function (tag) {
                         updateActionTag(tag, false);
                     }
+                });
+
+                $('.actionSelect2').select2({
+                    tags: true
                 });
             });
 

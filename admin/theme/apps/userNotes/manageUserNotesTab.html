@@ -105,7 +105,11 @@
             callback: function (resp) {
                 addModal.modal('hide');
                 Msg.success('Successfully added note.');
-                $('#notesTableBody').reloadFragment();
+                $('#notesTableBody').reloadFragment({
+                    whenComplete: function(){
+                        initInlineEditNotes();
+                    }
+                });
             }
         });
 
@@ -129,7 +133,10 @@
         $('.select2').select2({
             tags: true
         });
+        initInlineEditNotes();
+    }
 
+    function initInlineEditNotes() {
         $('.inlineEditNote').editable({
             send: 'auto',
             validate: function (value) {

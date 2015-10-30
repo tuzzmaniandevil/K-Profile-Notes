@@ -40,9 +40,20 @@ function manageUserNotes(page, params) {
             }
         }
     };
+    var actions = getActions(page);
+
+    var rawJson = actions.json;
+    var json = JSON.parse(rawJson);
+
+    var list = formatter.newArrayList();
+
+    for (var i = 0; i < json.actions.length; i++) {
+        list.add(json.actions[i]);
+    }
 
     var result = db.search(JSON.stringify(queryJson));
     page.attributes.recentChanges = result;
+    page.attributes.noteActionList = list;
 }
 
 function addNewAction(page, params) {
