@@ -1,0 +1,17 @@
+.editable-note {
+    display: block;
+    margin-bottom: 5px;  
+}
+
+.editable-note span {
+    width: 70px;  
+    display: inline-block;
+}
+
+.note-container .editIcon{
+    display: none;
+}
+
+.note-container:hover .editIcon{
+    display: inline;
+}

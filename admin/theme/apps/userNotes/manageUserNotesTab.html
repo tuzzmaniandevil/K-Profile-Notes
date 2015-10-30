@@ -13,7 +13,7 @@
             <col width="10%"/>
             <col width="15%"/>
             <col />
-            <col width="120px"/>
+            <col width="80px"/>
         </colgroup>
         <thead>
             <tr>
@@ -39,23 +39,10 @@
                 #set($userUrl = '/manageUsers/' + $hit.source.modifiedBy)
                 <td>$page.find($userUrl).thisProfile.formattedName</td>
                 <td>
-                    <div class="col-md-12" style="padding-left: 0px !important;">
-                        <span class="text-info"><strong>$hit.source.title</strong></span>
-                    </div>
-                    <div class="col-md-12" style="padding-left: 0px !important;">
-                        <pre style="font-size: inherit;color: inherit;border: initial;padding: initial;font-family: inherit; background-color:inherit !important;">$formatter.format($hit.source.details)</pre>
-                    </div>
+                    <a href="#" class="inlineEditNote" data-type="note" data-pk="1" data-value='{"title": "$formatter.format($hit.source.title)", "details": "$formatter.format($hit.source.details)"}' data-url="/_addUserNote/$hit.id" data-original-title="Edit Note"></a>
                 </td>
                 <td>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-success btn-add-to-group"><i class="fa fa-pencil"></i> Edit</button>
-                        <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a href="$hit.id" data-title="$hit.source.title" class="btn-remove-note"><i class="fa fa-trash"></i> Delete</a></li>
-                        </ul>
-                    </div>
+                    <a href="$hit.id" data-title="$hit.source.title" class="btn btn-sm btn-danger btn-remove-note"><i class="fa fa-trash"></i></a>
                 </td>
             </tr>
             #end
@@ -102,7 +89,10 @@
         </div>
     </form>
 </div>
-
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<link href="/theme/apps/userNotes/editable.notesEdit.css" rel="stylesheet" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js">//</script>
+<script src="/theme/apps/userNotes/editable.notesEdit.js" type="text/javascript">//</script>
 <script>
     pageInitFunctions.push(function () {
         initManageUserNotesTab();
@@ -138,6 +128,24 @@
 
         $('.select2').select2({
             tags: true
+        });
+
+        $('.inlineEditNote').editable({
+            send: 'auto',
+            validate: function (value) {
+                if (value.title == '') {
+                    return 'title is required!';
+                }
+                if (value.details == '') {
+                    return 'details is required!';
+                }
+            },
+            params: function (params) {
+                params.editNote = true;
+                params.title = params.value.title;
+                params.details = params.value.details;
+                return params;
+            }
         });
     }
 </script>

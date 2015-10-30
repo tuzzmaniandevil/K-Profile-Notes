@@ -63,12 +63,12 @@ function addUserNote(page, params) {
 
     var title = safeString(params.title);
     var details = safeString(params.details);
-    var action = safeString(params.action);
+    var actionString = safeString(params.action);
 
     var actions = getActionsArray(page);
 
-    if (!actions.contains(action)) {
-        addAction(page, action);
+    if (!actions.contains(actionString)) {
+        addAction(page, actionString);
     }
 
 
@@ -81,7 +81,7 @@ function addUserNote(page, params) {
         modifiedDate: nowISO,
         createdBy: currentUser.thisProfile.id,
         modifiedBy: currentUser.thisProfile.id,
-        action: action,
+        action: actionString,
         userName: userResource.thisProfile.name,
         userId: userResource.thisProfile.id
     };
@@ -92,7 +92,30 @@ function addUserNote(page, params) {
 }
 
 function updateUserNote(page, params) {
+    log.info('updateUserNote page = {} params = {}', page, params);
 
+    var noteId = safeString(page.attributes.noteId)
+
+    var record = getNoteRecord(page, noteId);
+
+    if (isNull(record)) {
+        return page.jsonResult(false);
+    }
+
+    var rawJson = record.json;
+    var json = JSON.parse(rawJson);
+
+    var title = safeString(params.title);
+    var details = safeString(params.details);
+
+    json.title = title;
+    json.details = details;
+    
+    log.info('result {}', JSON.stringify(json));
+    
+    record.update(JSON.stringify(json));
+
+    return page.jsonResult(true);
 }
 
 function deleteUserNote(page) {

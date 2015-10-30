@@ -5,6 +5,7 @@ function getOrCreateUrlDb(page) {
     if (isNull(db)) {
         db = jsonDb.createDb(DB_NAME, DB_TITLE, DB_NAME);
         db.setTypeMappings(RECORD_TYPES.NOTE, JSON.stringify(NoteMappings));
+        db.setTypeMappings(RECORD_TYPES.ACTION, JSON.stringify(ActionMappings));
     }
 
     return db;
@@ -101,6 +102,15 @@ var NoteMappings = {
             "index": "not_analyzed"
         },
         "userId": {
+            "type": "string",
+            "index": "not_analyzed"
+        }
+    }
+};
+
+var ActionMappings = {
+    "properties": {
+        "actions": {
             "type": "string",
             "index": "not_analyzed"
         }
