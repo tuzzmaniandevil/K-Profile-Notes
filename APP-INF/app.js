@@ -35,4 +35,5 @@ controllerMappings
         .addMethod('POST', 'addNewAction', 'addNewAction')
         .addMethod('POST', 'removeAction', 'removeAction')
         .addMethod('POST', 'addTemplate', 'addTemplate')
+        .addMethod('POST', 'updateTemplate', 'updateTemplate')
         .build();

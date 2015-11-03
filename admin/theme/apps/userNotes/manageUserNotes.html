@@ -94,7 +94,7 @@
                                         <td>
                                             <label class="label label-success">$!template.jsonObject.action</label>
                                         </td>
-                                        <td><button class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button></td>
+                                        <td><button type="button" data-tid="$template.name" data-template-json="$formatter.htmlAttEncode($template.json)" class="btn btn-sm btn-success btn-edit-template"><i class="fa fa-pencil"></i></button></td>
                                     </tr>
                                     #end
                                 </tbody>
@@ -117,7 +117,7 @@
         <!-- create modal -->
         <div id="modal-add-template" class="modal modal-md fade" aria-hidden="true">
             <form action="" method="POST" class="form-horizontal">
-                <input type="hidden" name="addTemplate" value="addTemplate"/>
+                <input type="hidden" class="template-action" name="addTemplate" value="true"/>
                 <div class="modal-header">
                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
                     <h4 class="modal-title">Create a new template</h4>
@@ -159,96 +159,12 @@
                 </div>
             </form>
         </div>
-
+        
+        <script src="/theme/apps/userNotes/manageUserNotes.js" type="text/javascript">//</script>
         <script>
             $(function () {
-                $('.timeago').timeago();
-
-                $('#actions').tagsInput({
-                    width: '100%',
-                    defaultText: 'Add',
-                    removeWithBackspace: false,
-                    onAddTag: function (tag) {
-                        updateActionTag(tag, true);
-                    },
-                    onRemoveTag: function (tag) {
-                        updateActionTag(tag, false);
-                    }
-                });
-
-                $('.actionSelect2').select2({
-                    tags: true,
-                    placeholder: "Select an action",
-                    ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
-                        url: window.location.pathname,
-                        dataType: 'json',
-                        quietMillis: 250,
-                        cache: false,
-                        data: function (term, page) {
-                            flog('select2 - data', term);
-                            return {
-                                searchActions: 'searchActions',
-                                q: term
-                            };
-                        },
-                        processResults: function (data, page) {
-                            return {
-                                results: $.map(data.actions, function (obj) {
-                                    return {id: obj, text: obj};
-                                })
-                            };
-                        },
-                    }
-                });
-
-                var addTemplateModal = $('#modal-add-template');
-                var addTemplateForm = addTemplateModal.find('form');
-
-                addTemplateForm.forms({
-                    validate: function (f) {
-                        var act = $(f).find('[name=action]');
-                        var actionVal = act.val().trim();
-
-                        if (actionVal.length > 0) {
-                            if (!$('#actions').tagExist(actionVal)) {
-                                $('#actions').addTag(actionVal);
-                            }
-                        }
-
-                        flog('action', act.val());
-                        return true;
-                    },
-                    callback: function (resp) {
-                        if (resp.status) {
-                            Msg.success(resp.messages);
-                            addTemplateModal.modal('hide');
-                            $('#templateTableContainer').reloadFragment();
-                        }
-                    }
-                });
-
-                addTemplateModal.on('hidden', function () {
-                    addTemplateForm.trigger('reset');
-                });
+                initManageUserNotes();
             });
-
-            function updateActionTag(tag, add) {
-                var data = {};
-                if (add) {
-                    data['addNewAction'] = tag;
-                } else {
-                    data['removeAction'] = tag;
-                }
-                $.ajax({
-                    type: "POST",
-                    data: data,
-                    url: window.location.pathname,
-                    dataType: "json",
-                    success: function (result) {
-                        flog(result);
-                    },
-                });
-            }
         </script>
     </body>
 </html>

@@ -148,6 +148,37 @@ function addTemplate(page, params) {
     return page.jsonResult(true, 'Successfully added template');
 }
 
+function updateTemplate(page, params) {
+    log.info('updateTemplate page={} params={}', page, params);
+
+    var templateId = safeString(params.updateTemplate);
+
+    var record = getTemplateRecordFromId(page, templateId);
+    var json = JSON.parse(record.json);
+
+    var actionString = safeString(params.action);
+
+    if (isNotBlank(actionString)) {
+        var actions = getActionsArray(page);
+
+        if (!actions.contains(actionString)) {
+            addAction(page, actionString);
+        }
+    }
+
+    var d = {
+        templateTitle: safeString(params.name),
+        templateName: json.templateName,
+        title: safeString(params.title),
+        action: actionString,
+        details: safeString(params.details)
+    };
+
+    record.update(JSON.stringify(d));
+
+    return page.jsonResult(true, 'Updated');
+}
+
 function searchActions(page, params) {
     log.info('searchActions page={} params={}', page, params);
 

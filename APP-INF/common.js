@@ -23,6 +23,11 @@ function getTemplateRecord(page, tName) {
     return db.child(name);
 }
 
+function getTemplateRecordFromId(page, tName) {
+    var db = getOrCreateUrlDb(page);
+    return db.child(tName);
+}
+
 function getActions(page) {
     var db = getOrCreateUrlDb(page);
     var actions = db.child(RECORD_NAMES.ACTION());

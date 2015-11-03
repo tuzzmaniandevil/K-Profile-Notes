@@ -104,11 +104,20 @@
 <script src="/theme/apps/userNotes/editable.notesEdit.js" type="text/javascript">//</script>
 <script src="/theme/apps/userNotes/mustache.min.js" type="text/javascript">//</script>
 <script>
-    var extProfile = $formatter.toJson($profile);
     pageInitFunctions.push(function () {
         initManageUserNotesTab();
     });
     function initManageUserNotesTab() {
+        var viewItems = {
+            currentUser: $formatter.toJson($profile),
+            profile: $formatter.toJson($page.extProfileBean),
+            nowFormat: function () {
+                return function (text, render) {
+                    return moment().format(text);
+                }
+            }
+        }
+
         var addModal = $('#modal-add-notes');
         var addForm = addModal.find('form');
 
@@ -132,18 +141,18 @@
 
             if (val.length > 0) {
                 var json = JSON.parse(val);
-
+                
+                viewItems.now = new Date();
+                
                 var title = json.title.trim();
                 if (title.length > 0) {
-                    var templatedTitle = Mustache.render(title, extProfile);
+                    var templatedTitle = Mustache.render(title, viewItems);
                     addForm.find('[name=title]').val(templatedTitle);
                 }
                 var details = json.details.trim();
 
-                extProfile.now = moment().format('MMMM Do YYYY, h:mm:ss a');
-
                 if (details.length > 0) {
-                    var templatedDetails = Mustache.render(details, extProfile);
+                    var templatedDetails = Mustache.render(details, viewItems);
                     addForm.find('[name=details]').val(templatedDetails);
                 }
 
