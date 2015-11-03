@@ -4,6 +4,7 @@ function initManageUserNotes() {
     initModalSelect2();
     initModalForm();
     initEditTemplate();
+    initRemoveTemplate();
 }
 
 function initTimeago() {
@@ -93,12 +94,13 @@ function initEditTemplate() {
         e.preventDefault();
 
         var btn = $(this);
-        var json = btn.data('template-json');
+        var json = btn.closest('tr').data('template-json');
+        var templateId = btn.closest('tr').data('tid');
 
         addTemplateModal.find('.modal-title').text('Update template');
         addTemplateModal.find('[data-type="form-submit"]').text('Save');
         addTemplateModal.find('.template-action').attr('name', 'updateTemplate');
-        addTemplateModal.find('.template-action').attr('value', btn.data('tid'));
+        addTemplateModal.find('.template-action').attr('value', templateId);
 
         addTemplateModal.find('input[name=name]').val(json.templateTitle);
         addTemplateModal.find('input[name=title]').val(json.title);
@@ -115,6 +117,32 @@ function initEditTemplate() {
         s2.select2('val', json.action);
 
         addTemplateModal.modal('show');
+    });
+}
+
+function initRemoveTemplate() {
+    $('body').on('click', '.btn-remove-template', function (e) {
+        e.preventDefault();
+
+        var btn = $(this);
+        var templateId = btn.closest('tr').data('tid');
+
+        $.ajax({
+            type: "POST",
+            data: {
+                removeTemplate: templateId
+            },
+            url: window.location.pathname,
+            dataType: "json",
+            success: function (result) {
+                if (result.status) {
+                    Msg.success(result.messages);
+                    btn.closest('tr').remove();
+                } else {
+                    Msg.warning(result.messages);
+                }
+            },
+        });
     });
 }
 

@@ -179,6 +179,21 @@ function updateTemplate(page, params) {
     return page.jsonResult(true, 'Updated');
 }
 
+function removeTemplate(page, params) {
+    log.info('updateTemplate page={} params={}', page, params);
+
+    var templateId = safeString(params.removeTemplate);
+
+    var record = getTemplateRecordFromId(page, templateId);
+
+    if (isNotNull(record)) {
+        record.delete();
+        return page.jsonResult(true, 'Template deleted');
+    }
+
+    return page.jsonResult(false, 'Template not found');
+}
+
 function searchActions(page, params) {
     log.info('searchActions page={} params={}', page, params);
 
