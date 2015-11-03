@@ -47,7 +47,7 @@ function initModalSelect2() {
                         return {id: obj, text: obj};
                     })
                 };
-            },
+            }
         }
     });
 }
@@ -110,7 +110,7 @@ function initEditTemplate() {
 
         if (json.action.trim().length > 0) {
             if (s2.find('[value="' + json.action + '"]').length === 0) {
-                s2.append('<option value="' + json.action + '">' + json.action + '</option>')
+                s2.append('<option value="' + json.action + '">' + json.action + '</option>');
             }
         }
 
@@ -142,7 +142,7 @@ function initRemoveTemplate() {
                     } else {
                         Msg.warning(result.messages);
                     }
-                },
+                }
             });
         }
     });
@@ -162,6 +162,6 @@ function updateActionTag(tag, add) {
         dataType: "json",
         success: function (result) {
             flog(result);
-        },
+        }
     });
 }
