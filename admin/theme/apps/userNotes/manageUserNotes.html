@@ -3,6 +3,11 @@
         <title>User Notes</title>
         <link rel="stylesheet" href="/theme/assets/plugins/jQuery-Tags-Input/jquery.tagsinput.css">
         <script src="/theme/assets/plugins/jQuery-Tags-Input/jquery.tagsinput.js">//</script>
+        <style>
+            .select2-dropdown{
+                z-index: 1070 !important;
+            }
+        </style>
     </head>
     <body>
         <div class="row">
@@ -65,7 +70,7 @@
                                 <button type="button" class="btn btn-info pull-right"  data-toggle="modal" data-target="#modal-add-template">Add Template</button>
                             </div>
                         </div>
-                        <div class="table-responsive" style="padding-bottom: 0px !important;">
+                        <div id="templateTableContainer" class="table-responsive" style="padding-bottom: 0px !important;">
                             <table class="table">
                                 <colgroup>
                                     <col />
@@ -82,11 +87,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    #foreach($i in [0..5])
+                                    #foreach($template in $page.attributes.noteTemplates)
                                     <tr>
-                                        <td>Calls</td>
-                                        <td>Phoned Client</td>
-                                        <td>Called Client</td>
+                                        <td>$template.jsonObject.templateTitle</td>
+                                        <td>$template.jsonObject.title</td>
+                                        <td>
+                                            <label class="label label-success">$!template.jsonObject.action</label>
+                                        </td>
                                         <td><button class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button></td>
                                     </tr>
                                     #end
@@ -108,9 +115,9 @@
         </div>
 
         <!-- create modal -->
-        <div id="modal-add-template" class="modal modal-md fade" aria-hidden="true" tabindex="-1">
-            <form action="/_addNoteTemplate" method="POST" class="form-horizontal">
-                <input type="hidden" name="createNew" value="$page.userResource.href"/>
+        <div id="modal-add-template" class="modal modal-md fade" aria-hidden="true">
+            <form action="" method="POST" class="form-horizontal">
+                <input type="hidden" name="addTemplate" value="addTemplate"/>
                 <div class="modal-header">
                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
                     <h4 class="modal-title">Create a new template</h4>
@@ -131,9 +138,10 @@
                     <div class="form-group">
                         <label class="col-md-2 control-label" for="action">Action</label>
                         <div class="col-md-8">
-                            <select name="action" class="actionSelect2" style="width: 100%">
+                            <select name="action" class="actionSelect2 select2" style="width: 100%">
+                                <option></option>
                                 #foreach($action in $page.attributes.noteActionList)
-                                <option value="$action">$action</option>
+                                <option>$action</option>
                                 #end
                             </select>
                         </div>
@@ -169,7 +177,58 @@
                 });
 
                 $('.actionSelect2').select2({
-                    tags: true
+                    tags: true,
+                    placeholder: "Select an action",
+                    ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
+                        url: window.location.pathname,
+                        dataType: 'json',
+                        quietMillis: 250,
+                        cache: false,
+                        data: function (term, page) {
+                            flog('select2 - data', term);
+                            return {
+                                searchActions: 'searchActions',
+                                q: term
+                            };
+                        },
+                        processResults: function (data, page) {
+                            return {
+                                results: $.map(data.actions, function (obj) {
+                                    return {id: obj, text: obj};
+                                })
+                            };
+                        },
+                    }
+                });
+
+                var addTemplateModal = $('#modal-add-template');
+                var addTemplateForm = addTemplateModal.find('form');
+
+                addTemplateForm.forms({
+                    validate: function (f) {
+                        var act = $(f).find('[name=action]');
+                        var actionVal = act.val().trim();
+
+                        if (actionVal.length > 0) {
+                            if (!$('#actions').tagExist(actionVal)) {
+                                $('#actions').addTag(actionVal);
+                            }
+                        }
+
+                        flog('action', act.val());
+                        return true;
+                    },
+                    callback: function (resp) {
+                        if (resp.status) {
+                            Msg.success(resp.messages);
+                            addTemplateModal.modal('hide');
+                            $('#templateTableContainer').reloadFragment();
+                        }
+                    }
+                });
+
+                addTemplateModal.on('hidden', function () {
+                    addTemplateForm.trigger('reset');
                 });
             });
 

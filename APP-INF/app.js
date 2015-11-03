@@ -30,7 +30,9 @@ controllerMappings
         .path('/userNotes/')
         .enabled(true)
         .defaultView(views.templateView('userNotes/manageUserNotes.html'))
+        .addMethod('GET', 'searchActions', 'searchActions')
         .addMethod('GET', 'manageUserNotes')
         .addMethod('POST', 'addNewAction', 'addNewAction')
         .addMethod('POST', 'removeAction', 'removeAction')
+        .addMethod('POST', 'addTemplate', 'addTemplate')
         .build();

@@ -48,6 +48,8 @@ function userNotesTab(page, params, context) {
     context.put('noteActionsList', list);
 
     context.put('userNotesSearchResults', result);
+
+    context.put('userNotesTemplates', db.findByType(RECORD_TYPES.TEMPLATE));
 }
 
 function addUserNote(page, params) {

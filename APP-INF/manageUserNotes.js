@@ -54,6 +54,7 @@ function manageUserNotes(page, params) {
     var result = db.search(JSON.stringify(queryJson));
     page.attributes.recentChanges = result;
     page.attributes.noteActionList = list;
+    page.attributes.noteTemplates = db.findByType(RECORD_TYPES.TEMPLATE);
 }
 
 function addNewAction(page, params) {
@@ -108,4 +109,49 @@ function removeAction(page, params) {
     actions.update(JSON.stringify(json));
 
     return page.jsonResult(true);
+}
+
+function addTemplate(page, params) {
+    log.info('addTemplate page={} params={}', page, params);
+
+    var db = getOrCreateUrlDb(page);
+
+    var tTitle = safeString(params.name);
+    var tName = replaceYuckyChars(tTitle);
+    var actionString = safeString(params.action);
+
+    var templateRecord = getTemplateRecord(page, tName);
+
+    if (isNotNull(templateRecord)) {
+        var v = views.jsonResult(false).addFieldMessage('title', 'a Template with that name already exists');
+        return views.jsonObjectView(v);
+    }
+
+    var d = {
+        templateTitle: tTitle,
+        templateName: tName,
+        title: safeString(params.title),
+        action: actionString,
+        details: safeString(params.details)
+    };
+
+    if (isNotBlank(actionString)) {
+        var actions = getActionsArray(page);
+
+        if (!actions.contains(actionString)) {
+            addAction(page, actionString);
+        }
+    }
+
+    db.createNew(RECORD_NAMES.TEMPLATE(tName), JSON.stringify(d), RECORD_TYPES.TEMPLATE);
+
+    return page.jsonResult(true, 'Successfully added template');
+}
+
+function searchActions(page, params) {
+    log.info('searchActions page={} params={}', page, params);
+
+    var actions = getActions(page);
+
+    return views.textView(actions.json);
 }

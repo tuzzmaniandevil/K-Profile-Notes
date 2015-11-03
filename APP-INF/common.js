@@ -17,6 +17,12 @@ function getNoteRecord(page, noteId) {
     return db.child(noteId);
 }
 
+function getTemplateRecord(page, tName) {
+    var db = getOrCreateUrlDb(page);
+    var name = RECORD_NAMES.TEMPLATE(tName);
+    return db.child(name);
+}
+
 function getActions(page) {
     var db = getOrCreateUrlDb(page);
     var actions = db.child(RECORD_NAMES.ACTION());
@@ -120,7 +126,11 @@ var ActionMappings = {
 
 var TemplateMappings = {
     "properties": {
-        "name": {
+        "templateTitle": {
+            "type": "string",
+            "index": "not_analyzed"
+        },
+        "templateName": {
             "type": "string",
             "index": "not_analyzed"
         },
