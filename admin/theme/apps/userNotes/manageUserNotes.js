@@ -127,22 +127,24 @@ function initRemoveTemplate() {
         var btn = $(this);
         var templateId = btn.closest('tr').data('tid');
 
-        $.ajax({
-            type: "POST",
-            data: {
-                removeTemplate: templateId
-            },
-            url: window.location.pathname,
-            dataType: "json",
-            success: function (result) {
-                if (result.status) {
-                    Msg.success(result.messages);
-                    btn.closest('tr').remove();
-                } else {
-                    Msg.warning(result.messages);
-                }
-            },
-        });
+        if (confirm("Are you sure you want to delete this template?")) {
+            $.ajax({
+                type: "POST",
+                data: {
+                    removeTemplate: templateId
+                },
+                url: window.location.pathname,
+                dataType: "json",
+                success: function (result) {
+                    if (result.status) {
+                        Msg.success(result.messages);
+                        btn.closest('tr').remove();
+                    } else {
+                        Msg.warning(result.messages);
+                    }
+                },
+            });
+        }
     });
 }
 
