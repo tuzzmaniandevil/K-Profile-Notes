@@ -34,6 +34,7 @@
                     #if($hit.source.action.length() > 0)
                     <span class="label label-success">$hit.source.action</span>
                     #end
+                    <a href="#" class="noteAction" data-type="select2" data-pk="1" data-original-title="Select type"></a>
                 </td>
                 <td>$formatter.formatDateTime($formatter.parseDate($hit.source.modifiedDate))</td>
                 #set($userUrl = '/manageUsers/' + $hit.source.modifiedBy)
@@ -214,6 +215,7 @@
             }
         });
         initInlineEditNotes();
+        initInlineActionSelect();
     }
 
     function initInlineEditNotes() {
@@ -232,6 +234,15 @@
                 params.title = params.value.title;
                 params.details = params.value.details;
                 return params;
+            }
+        });
+    }
+
+    function initInlineActionSelect() {
+        $('.noteAction').editable({
+            placeholder: "Select an action",
+            select2: {
+                tags: true
             }
         });
     }

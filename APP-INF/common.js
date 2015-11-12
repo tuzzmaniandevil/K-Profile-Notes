@@ -4,9 +4,14 @@ function getOrCreateUrlDb(page) {
     log.info("jsonDb = {} db = {}", jsonDb, db);
     if (isNull(db)) {
         db = jsonDb.createDb(DB_NAME, DB_TITLE, DB_NAME);
-        db.setTypeMappings(RECORD_TYPES.NOTE, JSON.stringify(NoteMappings));
-        db.setTypeMappings(RECORD_TYPES.ACTION, JSON.stringify(ActionMappings));
-        db.setTypeMappings(RECORD_TYPES.TEMPLATE, JSON.stringify(TemplateMappings));
+
+        var b = formatter.newMapBuilder();
+        b
+                .field(RECORD_TYPES.NOTE, JSON.stringify(NoteMappings))
+                .field(RECORD_TYPES.ACTION, JSON.stringify(ActionMappings))
+                .field(RECORD_TYPES.TEMPLATE, JSON.stringify(TemplateMappings));
+
+        db.updateTypeMappings(b);
     }
 
     return db;
