@@ -17,6 +17,20 @@ function getOrCreateUrlDb(page) {
     return db;
 }
 
+function getOrCreateOption(page, type) {
+    var optionName = RECORD_NAMES.OPTION(type);
+
+    var db = getOrCreateUrlDb(page);
+
+    var optionRecord = db.child(optionName);
+
+    if (isNull(optionRecord)) {
+        optionRecord = db.createNew(optionName, '{"type":"' + type + '", "enabled": false}', RECORD_TYPES.OPTION);
+    }
+
+    return optionRecord;
+}
+
 function getNoteRecord(page, noteId) {
     var db = getOrCreateUrlDb(page);
     return db.child(noteId);

@@ -135,6 +135,54 @@
                         <input id="types" class="form-control" value="$formatter.toCsv($page.attributes.noteActionList)" />
                     </div>
                 </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-cogs"></i>
+                        Options
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive" style="padding-bottom: 0px !important; overflow-x: visible !important;">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="35px"/>
+                                    <col />
+                                    <col />
+                                    <col />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Active</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-type="email-in">
+                                        <td class="text-center">
+                                            <div class="make-switch" data-on="success" data-off="danger">
+                                                <input name="active" type="checkbox" checked>
+                                            </div>
+                                        </td>
+                                        <td>Incoming Email</td>
+                                        <td>Create a note when a user receives an email</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr data-type="email-out">
+                                        <td class="text-center">
+                                            <div class="make-switch" data-on="success" data-off="danger">
+                                                <input name="active" type="checkbox">
+                                            </div>
+                                        </td>
+                                        <td>Outgoing Email</td>
+                                        <td>Create a note when a user sends an email</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -188,6 +236,19 @@
         <script>
             $(function () {
                 initManageUserNotes();
+                $('input[name="active"]').on('switchChange', function (event, state) {
+                    var btn = $(this);
+                    var row = btn.closest('tr');
+
+                    var type = row.data('type');
+
+                    var data = {updateOption: type, enabled: state.value};
+
+                    flog('updateOption', data);
+                    $.post(window.location.pathname, data, function (resp) {
+                        flog('post success', resp);
+                    });
+                });
             });
         </script>
     </body>

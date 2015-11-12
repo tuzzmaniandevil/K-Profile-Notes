@@ -5,7 +5,7 @@ var
 
 var RECORD_TYPES = {
     NOTE: 'NOTE',
-    ACTION: 'ACTION',
+    OPTION: 'OPTION',
     TYPE: 'TYPE',
     TEMPLATE: 'TEMPLATE'
 };
@@ -14,8 +14,8 @@ var RECORD_NAMES = {
     NOTE: function () {
         return 'note_' + formatter.now.time;
     },
-    ACTION: function () {
-        return 'action';
+    OPTION: function (name) {
+        return 'option_' + name;
     },
     TYPE: function () {
         return 'type';
