@@ -12,15 +12,15 @@ function initTimeago() {
 }
 
 function initTagsInput() {
-    $('#actions').tagsInput({
+    $('#types').tagsInput({
         width: '100%',
         defaultText: 'Add',
         removeWithBackspace: false,
         onAddTag: function (tag) {
-            updateActionTag(tag, true);
+            updateTypeTag(tag, true);
         },
         onRemoveTag: function (tag) {
-            updateActionTag(tag, false);
+            updateTypeTag(tag, false);
         }
     });
 }
@@ -37,13 +37,13 @@ function initModalSelect2() {
             data: function (term, page) {
                 flog('select2 - data', term);
                 return {
-                    searchActions: 'searchActions',
+                    searchTypes: 'searchTypes',
                     q: term
                 };
             },
             processResults: function (data, page) {
                 return {
-                    results: $.map(data.actions, function (obj) {
+                    results: $.map(data.types, function (obj) {
                         return {id: obj, text: obj};
                     })
                 };
@@ -58,16 +58,16 @@ function initModalForm() {
 
     addTemplateForm.forms({
         validate: function (f) {
-            var act = $(f).find('[name=action]');
+            var act = $(f).find('[name=type]');
             var actionVal = act.val().trim();
 
             if (actionVal.length > 0) {
-                if (!$('#actions').tagExist(actionVal)) {
-                    $('#actions').addTag(actionVal);
+                if (!$('#types').tagExist(actionVal)) {
+                    $('#types').addTag(actionVal);
                 }
             }
 
-            flog('action', act.val());
+            flog('type', act.val());
             return true;
         },
         callback: function (resp) {
@@ -108,13 +108,13 @@ function initEditTemplate() {
 
         var s2 = addTemplateModal.find('.actionSelect2');
 
-        if (json.action.trim().length > 0) {
-            if (s2.find('[value="' + json.action + '"]').length === 0) {
-                s2.append('<option value="' + json.action + '">' + json.action + '</option>');
+        if (json.type.trim().length > 0) {
+            if (s2.find('[value="' + json.type + '"]').length === 0) {
+                s2.append('<option value="' + json.type + '">' + json.type + '</option>');
             }
         }
 
-        s2.select2('val', json.action);
+        s2.select2('val', json.type);
 
         addTemplateModal.modal('show');
     });
@@ -148,12 +148,12 @@ function initRemoveTemplate() {
     });
 }
 
-function updateActionTag(tag, add) {
+function updateTypeTag(tag, add) {
     var data = {};
     if (add) {
-        data['addNewAction'] = tag;
+        data['addNewType'] = tag;
     } else {
-        data['removeAction'] = tag;
+        data['removeType'] = tag;
     }
     $.ajax({
         type: "POST",

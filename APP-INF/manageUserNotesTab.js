@@ -34,15 +34,15 @@ function userNotesTab(page, params, context) {
 
     var result = db.search(JSON.stringify(queryJson));
 
-    var actions = getActions(page);
+    var types = getTypes(page);
 
-    var rawJson = actions.json;
+    var rawJson = types.json;
     var json = JSON.parse(rawJson);
 
     var list = formatter.newArrayList();
 
-    for (var i = 0; i < json.actions.length; i++) {
-        list.add(json.actions[i]);
+    for (var i = 0; i < json.types.length; i++) {
+        list.add(json.types[i]);
     }
 
     context.put('noteActionsList', list);
@@ -65,12 +65,12 @@ function addUserNote(page, params) {
 
     var title = safeString(params.title);
     var details = safeString(params.details);
-    var actionString = safeString(params.action);
+    var typeString = safeString(params.type);
 
-    var actions = getActionsArray(page);
+    var types = getTypesArray(page);
 
-    if (!actions.contains(actionString)) {
-        addAction(page, actionString);
+    if (!types.contains(typeString)) {
+        addType(page, typeString);
     }
 
 
@@ -83,7 +83,7 @@ function addUserNote(page, params) {
         modifiedDate: nowISO,
         createdBy: currentUser.thisProfile.id,
         modifiedBy: currentUser.thisProfile.id,
-        action: actionString,
+        type: typeString,
         userName: userResource.thisProfile.name,
         userId: userResource.thisProfile.id
     };

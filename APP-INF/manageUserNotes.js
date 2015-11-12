@@ -3,22 +3,18 @@ function manageUserNotes(page, params) {
 
     var db = getOrCreateUrlDb(page);
 
-    var actions = db.child(RECORD_NAMES.ACTION());
+    var types = getTypes(page);
 
-    if (isNull(actions)) {
-        actions = db.createNew(RECORD_NAMES.ACTION(), '{"actions":[]}', RECORD_TYPES.ACTION);
-    }
-
-    var rawJson = actions.json;
+    var rawJson = types.json;
     var json = JSON.parse(rawJson);
 
     var list = formatter.newArrayList();
 
-    for (var i = 0; i < json.actions.length; i++) {
-        list.add(json.actions[i]);
+    for (var i = 0; i < json.types.length; i++) {
+        list.add(json.types[i]);
     }
 
-    page.attributes.actions = list;
+    page.attributes.noteActionList = list;
 
     var queryJson = {
         "size": 10,
@@ -40,61 +36,50 @@ function manageUserNotes(page, params) {
             }
         }
     };
-    var actions = getActions(page);
-
-    var rawJson = actions.json;
-    var json = JSON.parse(rawJson);
-
-    var list = formatter.newArrayList();
-
-    for (var i = 0; i < json.actions.length; i++) {
-        list.add(json.actions[i]);
-    }
 
     var result = db.search(JSON.stringify(queryJson));
     page.attributes.recentChanges = result;
-    page.attributes.noteActionList = list;
     page.attributes.noteTemplates = db.findByType(RECORD_TYPES.TEMPLATE);
 }
 
-function addNewAction(page, params) {
-    log.info('addNewAction page={} params={}', page, params);
+function addNewType(page, params) {
+    log.info('addNewType page={} params={}', page, params);
 
     var db = getOrCreateUrlDb(page);
 
-    var actions = db.child(RECORD_NAMES.ACTION());
+    var types = db.child(RECORD_NAMES.TYPE());
 
-    if (isNull(actions)) {
-        actions = db.createNew(RECORD_NAMES.ACTION(), '{"actions":[]}', RECORD_TYPES.ACTION);
+    if (isNull(types)) {
+        types = db.createNew(RECORD_NAMES.TYPE(), '{"types":[]}', RECORD_TYPES.TYPE);
     }
 
-    var rawJson = actions.json;
+    var rawJson = types.json;
     var json = JSON.parse(rawJson);
 
-    var tag = safeString(params.addNewAction);
-    json.actions.push(tag);
+    var tag = safeString(params.addNewType);
+    json.types.push(tag);
 
-    actions.update(JSON.stringify(json));
+    types.update(JSON.stringify(json));
 
     return page.jsonResult(true);
 }
 
-function removeAction(page, params) {
-    log.info('removeAction page={} params={}', page, params);
+function removeType(page, params) {
+    log.info('removeType page={} params={}', page, params);
 
     var db = getOrCreateUrlDb(page);
 
-    var actions = db.child(RECORD_NAMES.ACTION());
+    var types = db.child(RECORD_NAMES.TYPE());
 
-    if (isNull(actions)) {
+    if (isNull(types)) {
         return page.jsonResult(false);
     }
 
-    var rawJson = actions.json;
+    var rawJson = types.json;
     var json = JSON.parse(rawJson);
-    var tag = safeString(params.removeAction);
+    var tag = safeString(params.removeType);
 
-    var a = json.actions;
+    var a = json.types;
 
     var newList = [];
 
@@ -104,9 +89,9 @@ function removeAction(page, params) {
         }
     }
 
-    json.actions = newList;
+    json.types = newList;
 
-    actions.update(JSON.stringify(json));
+    types.update(JSON.stringify(json));
 
     return page.jsonResult(true);
 }
@@ -118,12 +103,12 @@ function addTemplate(page, params) {
 
     var tTitle = safeString(params.name);
     var tName = replaceYuckyChars(tTitle);
-    var actionString = safeString(params.action);
+    var typeString = safeString(params.type);
 
     var templateRecord = getTemplateRecord(page, tName);
 
     if (isNotNull(templateRecord)) {
-        var v = views.jsonResult(false).addFieldMessage('title', 'a Template with that name already exists');
+        var v = views.jsonResult(false).addFieldMessage('name', 'a Template with that name already exists');
         return views.jsonObjectView(v);
     }
 
@@ -131,15 +116,15 @@ function addTemplate(page, params) {
         templateTitle: tTitle,
         templateName: tName,
         title: safeString(params.title),
-        action: actionString,
+        type: typeString,
         details: safeString(params.details)
     };
 
-    if (isNotBlank(actionString)) {
-        var actions = getActionsArray(page);
+    if (isNotBlank(typeString)) {
+        var types = getTypesArray(page);
 
-        if (!actions.contains(actionString)) {
-            addAction(page, actionString);
+        if (!types.contains(typeString)) {
+            addType(page, typeString);
         }
     }
 
@@ -159,10 +144,10 @@ function updateTemplate(page, params) {
     var actionString = safeString(params.action);
 
     if (isNotBlank(actionString)) {
-        var actions = getActionsArray(page);
+        var types = getTypesArray(page);
 
-        if (!actions.contains(actionString)) {
-            addAction(page, actionString);
+        if (!types.contains(actionString)) {
+            addType(page, actionString);
         }
     }
 
@@ -170,7 +155,7 @@ function updateTemplate(page, params) {
         templateTitle: safeString(params.name),
         templateName: json.templateName,
         title: safeString(params.title),
-        action: actionString,
+        type: actionString,
         details: safeString(params.details)
     };
 
@@ -194,10 +179,10 @@ function removeTemplate(page, params) {
     return page.jsonResult(false, 'Template not found');
 }
 
-function searchActions(page, params) {
+function searchTypes(page, params) {
     log.info('searchActions page={} params={}', page, params);
 
-    var actions = getActions(page);
+    var types = getTypes(page);
 
-    return views.textView(actions.json);
+    return views.textView(types.json);
 }

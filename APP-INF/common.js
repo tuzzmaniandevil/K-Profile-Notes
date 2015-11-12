@@ -8,7 +8,7 @@ function getOrCreateUrlDb(page) {
         var b = formatter.newMapBuilder();
         b
                 .field(RECORD_TYPES.NOTE, JSON.stringify(NoteMappings))
-                .field(RECORD_TYPES.ACTION, JSON.stringify(ActionMappings))
+                .field(RECORD_TYPES.TYPE, JSON.stringify(TypeMappings))
                 .field(RECORD_TYPES.TEMPLATE, JSON.stringify(TemplateMappings));
 
         db.updateTypeMappings(b);
@@ -33,37 +33,37 @@ function getTemplateRecordFromId(page, tName) {
     return db.child(tName);
 }
 
-function getActions(page) {
+function getTypes(page) {
     var db = getOrCreateUrlDb(page);
-    var actions = db.child(RECORD_NAMES.ACTION());
+    var types = db.child(RECORD_NAMES.TYPE());
 
-    if (isNull(actions)) {
-        actions = db.createNew(RECORD_NAMES.ACTION(), '{"actions":[]}', RECORD_TYPES.ACTION);
+    if (isNull(types)) {
+        types = db.createNew(RECORD_NAMES.TYPE(), '{"types":[]}', RECORD_TYPES.TYPE);
     }
 
-    return actions;
+    return types;
 }
 
-function getActionsArray(page) {
+function getTypesArray(page) {
     var db = getOrCreateUrlDb(page);
-    var actions = db.child(RECORD_NAMES.ACTION());
+    var types = db.child(RECORD_NAMES.TYPE());
 
-    if (isNull(actions)) {
-        actions = db.createNew(RECORD_NAMES.ACTION(), '{"actions":[]}', RECORD_TYPES.ACTION);
+    if (isNull(types)) {
+        types = db.createNew(RECORD_NAMES.TYPE(), '{"types":[]}', RECORD_TYPES.TYPE);
     }
 
-    return actions.jsonObject.actions;
+    return types.jsonObject.types;
 }
 
-function addAction(page, action) {
-    var actions = getActions(page);
+function addType(page, action) {
+    var types = getTypes(page);
 
-    var rawJson = actions.json;
+    var rawJson = types.json;
     var json = JSON.parse(rawJson);
 
-    json.actions.push(action);
+    json.types.push(action);
 
-    actions.update(JSON.stringify(json));
+    types.update(JSON.stringify(json));
 }
 
 var setAllowAccess = function (jsonDB, allowAccess) {
@@ -110,7 +110,7 @@ var NoteMappings = {
         "modifiedDate": {
             "type": "date"
         },
-        "action": {
+        "type": {
             "type": "string",
             "index": "not_analyzed"
         },
@@ -125,9 +125,9 @@ var NoteMappings = {
     }
 };
 
-var ActionMappings = {
+var TypeMappings = {
     "properties": {
-        "actions": {
+        "types": {
             "type": "string",
             "index": "not_analyzed"
         }
@@ -152,7 +152,7 @@ var TemplateMappings = {
             "type": "string",
             "index": "not_analyzed"
         },
-        "action": {
+        "type": {
             "type": "string",
             "index": "not_analyzed"
         }

@@ -17,7 +17,7 @@
         </colgroup>
         <thead>
             <tr>
-                <th>Action</th>
+                <th>Type</th>
                 <th>Updated</th>
                 <th>Updated By</th>
                 <th>Description</th>
@@ -31,10 +31,9 @@
             #foreach($hit in $userNotesSearchResults.hits.hits)
             <tr>
                 <td>
-                    #if($hit.source.action.length() > 0)
-                    <span class="label label-success">$hit.source.action</span>
+                    #if($hit.source.type.length() > 0)
+                    <span class="label label-success">$hit.source.type</span>
                     #end
-                    <a href="#" class="noteAction" data-type="select2" data-pk="1" data-original-title="Select type"></a>
                 </td>
                 <td>$formatter.formatDateTime($formatter.parseDate($hit.source.modifiedDate))</td>
                 #set($userUrl = '/manageUsers/' + $hit.source.modifiedBy)
@@ -79,9 +78,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-2 control-label" for="title">Action</label>
+                <label class="col-md-2 control-label" for="title">Type</label>
                 <div class="col-md-8">
-                    <select name="action" class="form-control" style="width: 100%">
+                    <select name="type" class="form-control" style="width: 100%">
                         <option></option>
                     </select>
                 </div>
@@ -157,24 +156,24 @@
                     addForm.find('[name=details]').val(templatedDetails);
                 }
 
-                if (json.action.trim().length > 0) {
-                    if ($('#modal-add-notes select[name=action]').find('[value="' + json.action + '"]').length === 0) {
-                        $('#modal-add-notes select[name=action]').append('<option value="' + json.action + '">' + json.action + '</option>')
+                if (json.type.trim().length > 0) {
+                    if ($('#modal-add-notes select[name=type]').find('[value="' + json.type + '"]').length === 0) {
+                        $('#modal-add-notes select[name=type]').append('<option value="' + json.type + '">' + json.type + '</option>')
                     }
                 }
 
-                $('#modal-add-notes select[name=action]').select2('val', json.action);
+                $('#modal-add-notes select[name=type]').select2('val', json.type);
             } else {
                 addForm.find('[name=title]').val('');
                 addForm.find('[name=details]').val('');
-                $('#modal-add-notes select[name=action]').select2('val', '');
+                $('#modal-add-notes select[name=type]').select2('val', '');
             }
 
         });
 
         $('body').on('hidden.bs.modal', '#modal-add-notes', function () {
             addForm.trigger('reset');
-            $('#modal-add-notes select[name=action]').select2('val', '');
+            $('#modal-add-notes select[name=type]').select2('val', '');
         });
 
         $('body').on('click', '.btn-remove-note', function (e) {
@@ -190,8 +189,8 @@
             });
         });
 
-        $('#modal-add-notes select[name=action]').select2({
-            placeholder: "Select an action",
+        $('#modal-add-notes select[name=type]').select2({
+            placeholder: "Select a type",
             tags: true,
             ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
                 url: '/userNotes/',
@@ -201,13 +200,13 @@
                 data: function (term, page) {
                     flog('select2 - data', term);
                     return {
-                        searchActions: 'searchActions',
+                        searchTypes: 'searchTypes:',
                         q: term
                     };
                 },
                 processResults: function (data, page) {
                     return {
-                        results: $.map(data.actions, function (obj) {
+                        results: $.map(data.types, function (obj) {
                             return {id: obj, text: obj};
                         })
                     };
@@ -215,7 +214,6 @@
             }
         });
         initInlineEditNotes();
-        initInlineActionSelect();
     }
 
     function initInlineEditNotes() {
@@ -234,15 +232,6 @@
                 params.title = params.value.title;
                 params.details = params.value.details;
                 return params;
-            }
-        });
-    }
-
-    function initInlineActionSelect() {
-        $('.noteAction').editable({
-            placeholder: "Select an action",
-            select2: {
-                tags: true
             }
         });
     }

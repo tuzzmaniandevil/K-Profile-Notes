@@ -92,7 +92,7 @@
                                         <td>$template.jsonObject.templateTitle</td>
                                         <td>$template.jsonObject.title</td>
                                         <td>
-                                            <label class="label label-success">$!template.jsonObject.action</label>
+                                            <label class="label label-success">$!template.jsonObject.type</label>
                                         </td>
                                         <td class="center">
                                             <div class="visible-md visible-lg hidden-sm hidden-xs">
@@ -129,10 +129,10 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <i class="fa fa-tags"></i>
-                        Actions
+                        Types
                     </div>
                     <div class="panel-body">
-                        <input id="actions" class="form-control" value="$formatter.toCsv($page.attributes.actions)" />
+                        <input id="types" class="form-control" value="$formatter.toCsv($page.attributes.noteActionList)" />
                     </div>
                 </div>
             </div>
@@ -160,12 +160,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-2 control-label" for="action">Action</label>
+                        <label class="col-md-2 control-label" for="action">Type</label>
                         <div class="col-md-8">
-                            <select name="action" class="actionSelect2 select2" style="width: 100%">
+                            <select name="type" class="actionSelect2 select2" style="width: 100%">
                                 <option></option>
-                                #foreach($action in $page.attributes.noteActionList)
-                                <option>$action</option>
+                                #foreach($type in $page.attributes.noteActionList)
+                                <option>$type</option>
                                 #end
                             </select>
                         </div>
