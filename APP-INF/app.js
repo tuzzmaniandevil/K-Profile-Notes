@@ -37,8 +37,4 @@ controllerMappings
         .addMethod('POST', 'addTemplate', 'addTemplate')
         .addMethod('POST', 'updateTemplate', 'updateTemplate')
         .addMethod('POST', 'removeTemplate', 'removeTemplate')
-        .addMethod('POST', 'updateOption', 'updateOption')
         .build();
-
-/*==== Event Listeners ====*/
-controllerMappings.addEventListener('EmailReceivedEvent', true, 'handleEmailReceivedEvent');

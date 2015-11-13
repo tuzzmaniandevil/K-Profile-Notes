@@ -180,25 +180,9 @@ function removeTemplate(page, params) {
 }
 
 function searchTypes(page, params) {
-    log.info('searchActions page={} params={}', page, params);
+    log.info('searchTypes page={} params={}', page, params);
 
     var types = getTypes(page);
 
     return views.textView(types.json);
-}
-
-function updateOption(page, params) {
-    log.info('updateOption page={} params={}', page, params);
-
-    var optionType = safeString(params.updateOption);
-    var enabled = safeBoolean(params.enabled);
-
-    var optionRecord = getOrCreateOption(page, optionType);
-
-    var json = JSON.parse(optionRecord.json);
-    json.enabled = enabled;
-    
-    optionRecord.update(JSON.stringify(json));
-
-    return page.jsonResult(true);
 }
