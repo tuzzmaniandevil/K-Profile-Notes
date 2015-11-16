@@ -5,6 +5,8 @@ function getOrCreateUrlDb(page) {
     if (isNull(db)) {
         db = jsonDb.createDb(DB_NAME, DB_TITLE, DB_NAME);
 
+        setAllowAccess(db, true);
+
         var b = formatter.newMapBuilder();
         b
                 .field(RECORD_TYPES.NOTE, JSON.stringify(NoteMappings))
@@ -61,7 +63,11 @@ function addType(page, action) {
     var rawJson = types.json;
     var json = JSON.parse(rawJson);
 
-    json.types.push(action);
+    log.info('type length {}', json.types.length);
+
+    if (json.types.indexOf(action) < 0) {
+        json.types.push(action);
+    }
 
     types.update(JSON.stringify(json));
 }

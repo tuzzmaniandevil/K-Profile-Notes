@@ -45,21 +45,9 @@ function manageUserNotes(page, params) {
 function addNewType(page, params) {
     log.info('addNewType page={} params={}', page, params);
 
-    var db = getOrCreateUrlDb(page);
-
-    var types = db.child(RECORD_NAMES.TYPE());
-
-    if (isNull(types)) {
-        types = db.createNew(RECORD_NAMES.TYPE(), '{"types":[]}', RECORD_TYPES.TYPE);
-    }
-
-    var rawJson = types.json;
-    var json = JSON.parse(rawJson);
-
     var tag = safeString(params.addNewType);
-    json.types.push(tag);
 
-    types.update(JSON.stringify(json));
+    addType(page, tag);
 
     return page.jsonResult(true);
 }
@@ -121,11 +109,7 @@ function addTemplate(page, params) {
     };
 
     if (isNotBlank(typeString)) {
-        var types = getTypesArray(page);
-
-        if (!types.contains(typeString)) {
-            addType(page, typeString);
-        }
+        addType(page, typeString);
     }
 
     db.createNew(RECORD_NAMES.TEMPLATE(tName), JSON.stringify(d), RECORD_TYPES.TEMPLATE);
