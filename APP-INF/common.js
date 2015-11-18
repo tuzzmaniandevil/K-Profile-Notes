@@ -63,7 +63,7 @@ function addType(page, action) {
     var rawJson = types.json;
     var json = JSON.parse(rawJson);
 
-    log.info('type length {}', json.types.length);
+    log.info('type length {} raw:  {} json {}', json.types.length, rawJson, json);
 
     if (json.types.indexOf(action) < 0) {
         json.types.push(action);

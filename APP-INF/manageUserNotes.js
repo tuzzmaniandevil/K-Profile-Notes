@@ -168,5 +168,5 @@ function searchTypes(page, params) {
 
     var types = getTypes(page);
 
-    return views.textView(types.json);
+    return views.textView(types.json, 'text/json');
 }
