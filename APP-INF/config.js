@@ -1,7 +1,7 @@
 var
         APP_ID = controllerMappings.appName,
-        DB_NAME = 'userNotes',
-        DB_TITLE = 'User Notes DB';
+        DB_NAME = APP_ID + '_db',
+        DB_TITLE = 'Profile Notes DB';
 
 var RECORD_TYPES = {
     NOTE: 'NOTE',
