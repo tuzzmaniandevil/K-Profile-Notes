@@ -11,7 +11,7 @@ controllerMappings
         .adminController()
         .path('/_addUserNote/(?<noteId>[^/]*)$')
         .enabled(true)
-        .addMethod('POST', 'updateUserNote', 'editNote')
+        .addMethod('POST', 'updateUserNote', 'updateUserNote')
         .addMethod('DELETE', 'deleteUserNote')
         .build();
 

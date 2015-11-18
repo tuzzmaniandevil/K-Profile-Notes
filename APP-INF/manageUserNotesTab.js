@@ -112,9 +112,17 @@ function updateUserNote(page, params) {
 
     var title = safeString(params.title);
     var details = safeString(params.details);
+    var type = safeString(params.type);
+
+    var types = getTypesArray(page);
+
+    if (!types.contains(type)) {
+        addType(page, type);
+    }
 
     json.title = title;
     json.details = details;
+    json.type = type;
     json.modifiedBy = currentUser.thisProfile.id;
     json.modifiedDate = nowISO;
 

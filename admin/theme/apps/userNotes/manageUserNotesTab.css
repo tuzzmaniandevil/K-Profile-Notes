@@ -1,0 +1,17 @@
+/* 
+    Created on : 19/11/2015
+    Author     : dylan
+*/
+
+xmp {
+    white-space:pre-wrap;
+    word-wrap:break-word;
+    font-size: inherit;
+    margin-top: 0px;
+    font-family: inherit;
+    background-color:inherit !important;
+}
+
+.note-container div {
+    padding-left: 0px !important;
+}
