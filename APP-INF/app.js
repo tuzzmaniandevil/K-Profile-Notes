@@ -38,3 +38,20 @@ controllerMappings
         .addMethod('POST', 'updateTemplate', 'updateTemplate')
         .addMethod('POST', 'removeTemplate', 'removeTemplate')
         .build();
+
+/*==== Dashboard Portlets ====*/
+controllerMappings
+        .adminPortletController()
+        .portletSection('adminDashboardQuickLinks')
+        .templatePath('/theme/apps/userNotes/dashboardQuicklink.html')
+        .method('dashboardQuicklink')
+        .enabled(true)
+        .build();
+
+function dashboardQuicklink(page, params, contextMap) {
+    var db = getOrCreateUrlDb(page);
+
+    var notes = db.findByType(RECORD_TYPES.NOTE);
+
+    contextMap.put('profileNotes_size', notes.size());
+}
