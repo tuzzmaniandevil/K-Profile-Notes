@@ -55,3 +55,75 @@ function dashboardQuicklink(page, params, contextMap) {
 
     contextMap.put('profileNotes_size', notes.size());
 }
+
+/*==== User Timeline ====*/
+controllerMappings.setUserTimelineFunction('generateTimelineItems');
+
+function generateTimelineItems(page, user, list) {
+
+    var db = getOrCreateUrlDb(page);
+
+    var profile = user.thisProfile;
+
+    var queryJson = {
+        "size": 2147483647,
+        "query": {
+            "filtered": {
+                "filter": {
+                    "bool": {
+                        "must": [{
+                                "type": {
+                                    "value": RECORD_TYPES.NOTE
+                                }
+                            },
+                            {
+                                "term": {
+                                    "userId": profile.id.toString()
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "sort": {
+            "modifiedDate": {
+                "order": "desc"
+            }
+        }
+    };
+
+    var result = db.search(JSON.stringify(queryJson));
+
+    var hits = result.hits.hits;
+
+    log.info('Hits: {}', hits.length);
+
+    for (var i = 0; i < hits.length; i++) {
+        var h = hits[i];
+        var s = h.source;
+
+        var createdDate = formatter.toDate(s.createdDate);
+        var modifiedDate = formatter.toDate(s.modifiedDate);
+        var isModified = (createdDate.compareTo(modifiedDate) < 0 ? true : false);
+
+        var createdBy = page.find('/manageUsers/' + s.createdBy + '/');
+
+        var createdByUR = createdBy.userResource;
+
+        log.info('Created Date: {} , Modified Date: {}, CreatedBy: {}', createdDate, modifiedDate, createdByUR);
+
+        var streamItem = applications.stream.streamEventBuilder()
+                .profile(user)
+                .title('Note Created by ' + createdByUR.thisProfile.formattedName + ': ' + s.title)
+                .desc(s.details)
+                .date(createdDate)
+                .category('success')
+                .inbound(true)
+                .icon('fa-sticky-note')
+                .build();
+
+        list.add(streamItem);
+
+    }
+}
