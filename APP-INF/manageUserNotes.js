@@ -19,15 +19,14 @@ function manageUserNotes(page, params) {
     var queryJson = {
         "size": 10,
         "query": {
-            "filtered": {
-                "query": {
-                    "match_all": {}
-                },
-                "filter": {
-                    "type": {
-                        "value": RECORD_TYPES.NOTE
+            "bool": {
+                "must": [
+                    {
+                        "type": {
+                            "value": _config.RECORD_TYPES.NOTE
+                        }
                     }
-                }
+                ]
             }
         },
         "sort": {
@@ -39,7 +38,7 @@ function manageUserNotes(page, params) {
 
     var result = db.search(JSON.stringify(queryJson));
     page.attributes.recentChanges = result;
-    page.attributes.noteTemplates = db.findByType(RECORD_TYPES.TEMPLATE);
+    page.attributes.noteTemplates = db.findByType(_config.RECORD_TYPES.TEMPLATE);
 }
 
 function addNewType(page, params) {
@@ -57,7 +56,7 @@ function removeType(page, params) {
 
     var db = getOrCreateUrlDb(page);
 
-    var types = db.child(RECORD_NAMES.TYPE());
+    var types = db.child(_config.RECORD_NAMES.TYPE());
 
     if (isNull(types)) {
         return page.jsonResult(false);
@@ -112,7 +111,7 @@ function addTemplate(page, params) {
         addType(page, typeString);
     }
 
-    db.createNew(RECORD_NAMES.TEMPLATE(tName), JSON.stringify(d), RECORD_TYPES.TEMPLATE);
+    db.createNew(_config.RECORD_NAMES.TEMPLATE(tName), JSON.stringify(d), _config.RECORD_TYPES.TEMPLATE);
 
     return page.jsonResult(true, 'Successfully added template');
 }

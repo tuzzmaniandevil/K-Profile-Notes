@@ -51,7 +51,7 @@ controllerMappings
 function dashboardQuicklink(page, params, contextMap) {
     var db = getOrCreateUrlDb(page);
 
-    var notes = db.findByType(RECORD_TYPES.NOTE);
+    var notes = db.findByType(_config.RECORD_TYPES.NOTE);
 
     contextMap.put('profileNotes_size', notes.size());
 }
@@ -73,7 +73,7 @@ function generateTimelineItems(page, user, list) {
                     "bool": {
                         "must": [{
                                 "type": {
-                                    "value": RECORD_TYPES.NOTE
+                                    "value": _config.RECORD_TYPES.NOTE
                                 }
                             },
                             {

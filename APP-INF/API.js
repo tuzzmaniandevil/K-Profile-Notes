@@ -28,7 +28,7 @@ function addNote(page, byUser, forUser, title, type, details) {
             userId: forRes.thisProfile.id
         };
         var db = getOrCreateUrlDb(page);
-        return db.createNew(RECORD_NAMES.NOTE(), JSON.stringify(d), RECORD_TYPES.NOTE);
+        return db.createNew(_config.RECORD_NAMES.NOTE(), JSON.stringify(d), _config.RECORD_TYPES.NOTE);
     });
 
     return record.jsonObject;

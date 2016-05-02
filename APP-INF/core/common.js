@@ -1,17 +1,17 @@
 function getOrCreateUrlDb(page) {
     var jsonDb = page.find('/jsondb');
-    var db = jsonDb.child(DB_NAME);
+    var db = jsonDb.child(_config.DB_NAME);
     log.info("jsonDb = {} db = {}", jsonDb, db);
     if (isNull(db)) {
-        db = jsonDb.createDb(DB_NAME, DB_TITLE, DB_NAME);
+        db = jsonDb.createDb(_config.DB_NAME, _config.DB_TITLE, _config.DB_NAME);
 
         setAllowAccess(db, true);
 
         var b = formatter.newMapBuilder();
         b
-                .field(RECORD_TYPES.NOTE, JSON.stringify(NoteMappings))
-                .field(RECORD_TYPES.TYPE, JSON.stringify(TypeMappings))
-                .field(RECORD_TYPES.TEMPLATE, JSON.stringify(TemplateMappings));
+                .field(_config.RECORD_TYPES.NOTE, JSON.stringify(NoteMappings))
+                .field(_config.RECORD_TYPES.TYPE, JSON.stringify(TypeMappings))
+                .field(_config.RECORD_TYPES.TEMPLATE, JSON.stringify(TemplateMappings));
 
         db.updateTypeMappings(b);
     }
@@ -26,7 +26,7 @@ function getNoteRecord(page, noteId) {
 
 function getTemplateRecord(page, tName) {
     var db = getOrCreateUrlDb(page);
-    var name = RECORD_NAMES.TEMPLATE(tName);
+    var name = _config.RECORD_NAMES.TEMPLATE(tName);
     return db.child(name);
 }
 
@@ -37,10 +37,10 @@ function getTemplateRecordFromId(page, tName) {
 
 function getTypes(page) {
     var db = getOrCreateUrlDb(page);
-    var types = db.child(RECORD_NAMES.TYPE());
+    var types = db.child(_config.RECORD_NAMES.TYPE());
 
     if (isNull(types)) {
-        types = db.createNew(RECORD_NAMES.TYPE(), '{"types":[]}', RECORD_TYPES.TYPE);
+        types = db.createNew(_config.RECORD_NAMES.TYPE(), '{"types":[]}', _config.RECORD_TYPES.TYPE);
     }
 
     return types;
@@ -48,10 +48,10 @@ function getTypes(page) {
 
 function getTypesArray(page) {
     var db = getOrCreateUrlDb(page);
-    var types = db.child(RECORD_NAMES.TYPE());
+    var types = db.child(_config.RECORD_NAMES.TYPE());
 
     if (isNull(types)) {
-        types = db.createNew(RECORD_NAMES.TYPE(), '{"types":[]}', RECORD_TYPES.TYPE);
+        types = db.createNew(_config.RECORD_NAMES.TYPE(), '{"types":[]}', _config.RECORD_TYPES.TYPE);
     }
 
     return types.jsonObject.types;
@@ -87,7 +87,7 @@ var getAppSettings = function (page) {
         branch = websiteFolder.branch;
     }
 
-    var app = applications.get(APP_ID);
+    var app = applications.get(_config.APP_ID);
     if (app !== null) {
         var settings = app.getAppSettings(org, branch);
         return settings;
@@ -105,10 +105,12 @@ var checkRedirect = function (page, params) {
 var NoteMappings = {
     "properties": {
         "title": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
         },
         "details": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
         },
         "createdDate": {
             "type": "date"

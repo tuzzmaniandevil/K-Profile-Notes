@@ -1,8 +1,13 @@
 <controllers>
-    <source>/APP-INF/formatterUtils.js</source>
+    <!-- Common Functions and settings -->
+    <source>/APP-INF/core/common.js</source>
+    <source>/APP-INF/core/config.js</source>
+    <source>/APP-INF/core/formatterUtils.js</source>
+
+    <!-- Admin Portal Controllers -->
     <source>/APP-INF/app.js</source>
-    <source>/APP-INF/common.js</source>
-    <source>/APP-INF/config.js</source>
+    
+    <!-- API -->
     <source>/APP-INF/API.js</source>
     
     <source>/APP-INF/manageUserNotesTab.js</source>
