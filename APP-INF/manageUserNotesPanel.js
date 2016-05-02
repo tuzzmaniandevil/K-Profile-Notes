@@ -19,7 +19,7 @@ function userNotesPanel(page, params, context) {
                         },
                         {
                             "type": {
-                                "value": RECORD_TYPES.NOTE
+                                "value": _config.RECORD_TYPES.NOTE
                             }
                         }
                     ]

@@ -18,7 +18,7 @@ function userNotesTab(page, params, context) {
                         },
                         {
                             "type": {
-                                "value": RECORD_TYPES.NOTE
+                                "value": _config.RECORD_TYPES.NOTE
                             }
                         }
                     ]
@@ -49,7 +49,7 @@ function userNotesTab(page, params, context) {
 
     context.put('userNotesSearchResults', result);
 
-    context.put('userNotesTemplates', db.findByType(RECORD_TYPES.TEMPLATE));
+    context.put('userNotesTemplates', db.findByType(_config.RECORD_TYPES.TEMPLATE));
 }
 
 function addUserNote(page, params) {
@@ -88,7 +88,7 @@ function addUserNote(page, params) {
         userId: userResource.thisProfile.id
     };
 
-    db.createNew(RECORD_NAMES.NOTE(), JSON.stringify(d), RECORD_TYPES.NOTE);
+    db.createNew(_config.RECORD_NAMES.NOTE(), JSON.stringify(d), _config.RECORD_TYPES.NOTE);
 
     return page.jsonResult(true);
 }
