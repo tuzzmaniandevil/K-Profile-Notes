@@ -69,6 +69,11 @@ function addType(page, action) {
         json.types.push(action);
     }
 
+    var zeroIndex = json.types.indexOf(0);
+    if (zeroIndex > -1) {
+        json.types.splice(zeroIndex, 1);
+    }
+
     types.update(JSON.stringify(json));
 }
 
